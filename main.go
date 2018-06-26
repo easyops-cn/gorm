@@ -67,14 +67,7 @@ func Open(dialect string, args ...interface{}) (db *DB, err error) {
 		return nil, fmt.Errorf("invalid database source: %v is not a valid type", value)
 	}
 
-	db = &DB{
-		db:        dbSQL,
-		logger:    defaultLogger,
-		values:    map[string]interface{}{},
-		callbacks: DefaultCallback,
-		dialect:   newDialect(dialect, dbSQL),
-	}
-	db.parent = db
+	db = NewDB(dialect, dbSQL)
 	if err != nil {
 		return
 	}
@@ -85,6 +78,19 @@ func Open(dialect string, args ...interface{}) (db *DB, err error) {
 		}
 	}
 	return
+}
+
+// NewDB initialize a new db without connection verification
+func NewDB(dialect string, dbSQL SQLCommon) (db *DB) {
+	db = &DB{
+		db:        dbSQL,
+		logger:    defaultLogger,
+		values:    map[string]interface{}{},
+		callbacks: DefaultCallback,
+		dialect:   newDialect(dialect, dbSQL),
+	}
+	db.parent = db
+	return db
 }
 
 // New clone a new db connection without search conditions
