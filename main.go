@@ -1,6 +1,7 @@
 package gorm
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -22,6 +23,7 @@ type DB struct {
 	logger            logger
 	search            *search
 	values            map[string]interface{}
+	ctx               context.Context
 
 	// global db
 	parent        *DB
@@ -741,6 +743,7 @@ func (s *DB) GetErrors() []error {
 func (s *DB) clone() *DB {
 	db := &DB{
 		db:                s.db,
+		ctx:               s.ctx,
 		parent:            s.parent,
 		logger:            s.logger,
 		logMode:           s.logMode,
